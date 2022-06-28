@@ -1,0 +1,74 @@
+﻿@page "/"
+
+
+
+<MudDynamicTabs AddTab="@(() => AddTabCallback(true) )" CloseTab="@((p) => RemoveTab(p))" KeepPanelsAlive="true">
+    @foreach (var item in _tabs)
+    {
+        <MudTabPanel Text="@($"{item.Name} {item.Id}")" Tag="@item.Id">
+            <Toto Tab="@($"{item.Name} {item.Id}")">
+                @item.Content
+            </Toto>
+        </MudTabPanel>
+    }
+</MudDynamicTabs>
+
+@code {
+
+    private class TabView
+    {
+        public string? Name { get; set; }
+        public string? Content { get; set; }
+        public long Id { get; set; }
+    }
+
+    private long tabNb = 0;
+    private List<TabView> _tabs = new();
+    private int _index = 0;
+    private int? _nextIndex = null;
+
+    private void RemoveTab(MudTabPanel tabPanel)
+    {
+        var tab = _tabs.FirstOrDefault(x => x.Id == (long)tabPanel.Tag);
+        if (tab != null)
+        {
+            _tabs.Remove(tab);
+        }
+    }
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+        _tabs.Add(new TabView { Content = "First tab content", Name = "Tab A", Id = Interlocked.Increment(ref tabNb) });
+        _tabs.Add(new TabView { Content = "Second tab content", Name = "Tab B", Id = Interlocked.Increment(ref tabNb) });
+        _tabs.Add(new TabView { Content = "Third tab content", Name = "Tab C", Id = Interlocked.Increment(ref tabNb) });
+    }
+
+    private void AddTabCallback(Boolean append)
+    {
+        var tabView = new TabView { Name = "Dynamic content", Content = "A new tab", Id = Interlocked.Increment(ref tabNb) };
+
+        //the tab becomes available after it is rendered. Hence, we can't set the index here
+        if (append == true)
+        {
+            _tabs.Add(tabView);
+            _nextIndex = _tabs.Count - 1;
+        }
+        else
+        {
+            _tabs.Insert(0, tabView);
+            _nextIndex = 0;
+        }
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (_nextIndex.HasValue == true)
+        {
+            _index = _nextIndex.Value;
+            _nextIndex = null;
+            StateHasChanged();
+        }
+    }
+}

@@ -1,0 +1,15 @@
+﻿
+<CascadingValue Value="@titi">
+    <h3>Toto</h3>
+
+    @ChildContent
+
+    <Tutu />
+
+    <Titi @ref="titi" />
+
+</CascadingValue>
+
+@code {
+    private Titi? titi;
+}

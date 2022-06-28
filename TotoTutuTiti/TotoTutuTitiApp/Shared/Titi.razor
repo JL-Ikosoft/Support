@@ -1,0 +1,19 @@
+﻿<h3>Titi</h3>
+
+
+<MudStack>
+    @foreach (var item in data)
+    {
+        <MudItem>@item</MudItem>
+    }
+</MudStack>
+
+@code {
+    private List<string> data = new();
+
+    public async void SetData(string txt)
+    {
+        data.Add(txt);
+        await InvokeAsync(StateHasChanged);
+    }
+}

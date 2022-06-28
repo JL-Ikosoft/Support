@@ -1,0 +1,19 @@
+﻿<h3>Tutu</h3>
+
+<MudButton OnClick="@((e) => { Titi?.SetData($"Clicked at {DateTime.Now.Ticks:N0}"); })">Ok</MudButton>
+
+@code {
+    [CascadingParameter]
+    public Titi? Titi { get; set; }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await base.OnAfterRenderAsync(firstRender);
+
+        if (firstRender)
+        {
+            Titi?.SetData($"Hello at {DateTime.Now.Ticks:N0}");
+        }
+    }
+
+}
